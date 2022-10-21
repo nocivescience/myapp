@@ -5,22 +5,78 @@ import imageD from '../images/d.jpg';
 import {ReactComponent as Izquierda} from '../images/left.svg';
 import {ReactComponent as Derecha} from '../images/right.svg';
 import styled from 'styled-components';
-const App=()=>{
+import {useRef, useEffect} from 'react';
+const Slideshow=()=>{
+    useEffect(()=>{
+        setInterval(()=>{
+            siguiente();
+        },5000)
+    },[])
+    const siguiente=()=>{
+        //que el slideshow tenga hijos
+        if(slideshow.current.children.length>0){
+            //obtenemos el primer elemento del slideshow
+            const primerElemento=slideshow.current.children[0];
+            slideshow.current.style.transition=`600ms ease-out all`;
+            const slideSize=slideshow.current.children[0].offsetWidth;
+            slideshow.current.style.transform=`translateX(-${slideSize}px)`;
+            const transicion=()=>{
+                slideshow.current.style.transition='none';
+                slideshow.current.style.transform='translateX(0px)';
+                slideshow.current.appendChild(primerElemento);
+                slideshow.current.removeEventListener('transitionend',transicion)
+            }
+            slideshow.current.addEventListener('transitionend', transicion);
+        }
+    };
+    const anterior=()=>{
+        if(slideshow.current.children.length>0){
+            const index=slideshow.current.children.length-1;
+            const ultimoElemento=slideshow.current.children[index];
+            slideshow.current.insertBefore(ultimoElemento,slideshow.current.firstChild);
+            slideshow.current.style.transition='none';
+            const slideSize=slideshow.current.children[0].offsetWidth;
+            slideshow.current.style.transform=`translateX(-${slideSize}px)`;
+            setTimeout(()=>{
+                slideshow.current.style.transition=`600ms ease-out all`;
+                slideshow.current.style.transform='translateX(0)';
+            },30)
+        }
+    }
+    const slideshow=useRef(null);
     return (
         <ContenedorPrincipal>
-            <ContenedorSlideshow>
+            <ContenedorSlideshow ref={slideshow}>
                 <Slide>
                     <a href='www.github.com'>
                         <img src={imageA}/>
                     </a>
                     <TextoSlide>15% de descuentos en productos Apple</TextoSlide>
                 </Slide>
+                <Slide>
+                    <a href='www.github.com'>
+                        <img src={imageB}/>
+                    </a>
+                    <TextoSlide>15% de descuentos en productos Apple</TextoSlide>
+                </Slide>
+                <Slide>
+                    <a href='www.github.com'>
+                        <img src={imageC}/>
+                    </a>
+                    <TextoSlide>15% de descuentos en productos Apple</TextoSlide>
+                </Slide>
+                <Slide>
+                    <a href='www.github.com'>
+                        <img src={imageD}/>
+                    </a>
+                    <TextoSlide>15% de descuentos en productos Apple</TextoSlide>
+                </Slide>
             </ContenedorSlideshow>
             <Controles>
-                <Boton>
+                <Boton onClick={anterior}>
                     <Izquierda/>
                 </Boton>
-                <Boton derecho>
+                <Boton derecho onClick={siguiente}>
                     <Derecha/>
                 </Boton>
             </Controles>
@@ -91,4 +147,4 @@ const Boton=styled.button`
     }
     ${props=> props.derecho ? 'right:0' : 'left: 0' }
 `;
-export default App;
+export default Slideshow;
