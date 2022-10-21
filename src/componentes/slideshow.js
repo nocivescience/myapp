@@ -7,11 +7,6 @@ import {ReactComponent as Derecha} from '../images/right.svg';
 import styled from 'styled-components';
 import {useRef, useEffect} from 'react';
 const Slideshow=()=>{
-    useEffect(()=>{
-        setInterval(()=>{
-            siguiente();
-        },5000)
-    },[])
     const siguiente=()=>{
         //que el slideshow tenga hijos
         if(slideshow.current.children.length>0){
@@ -29,6 +24,15 @@ const Slideshow=()=>{
             slideshow.current.addEventListener('transitionend', transicion);
         }
     };
+    useEffect(()=>{
+        const intervalo=setInterval(()=>{
+            siguiente();
+        },5000);
+        slideshow.current.addEventListener('mouseenter',()=>{
+            clearInterval(intervalo);
+            console.log('hhodffg')
+        })
+    },[])
     const anterior=()=>{
         if(slideshow.current.children.length>0){
             const index=slideshow.current.children.length-1;
